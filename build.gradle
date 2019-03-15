@@ -47,9 +47,7 @@ subprojects {
     ext.scalacParameters = [
             "-target:jvm-$ver.jvm".toString(),
             '-unchecked',
-            '-deprecation',
             '-feature',
-            '-Xfatal-warnings',
             '-Xfuture',
             '-Ypartial-unification',
             '-Ywarn-adapted-args'
