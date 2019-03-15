@@ -3,16 +3,12 @@ package org.opencypher.spark.examples
 import org.opencypher.okapi.api.graph.Namespace
 import org.opencypher.spark.api.io.sql.SqlDataSourceConfig
 import org.opencypher.spark.api.{CAPSSession, GraphSources}
-import org.opencypher.spark.util.App
+import org.opencypher.spark.util.{App, DomainResolutionDB}
 import org.opencypher.spark.api.io.{Node, Relationship, RelationshipType}
-import org.opencypher.spark.examples.NorthwindJdbcExample.resource
+import org.opencypher.spark.examples.NorthwindJdbcExample.{resource, session, sqlGraphSource}
 
 
-/**
-  * Demonstrates multiple graph capabilities by loading a social network from case class objects and a purchase network
-  * from CSV data and schema files. The example connects both networks via matching user and customer names. A Cypher
-  * query is then used to compute products that friends have bought.
-  */
+
 object UplevelMultiGraphExample extends App {
   // 1) Create CAPS session
   implicit val session: CAPSSession = CAPSSession.local()
@@ -26,6 +22,20 @@ object UplevelMultiGraphExample extends App {
     .sql(resource("uplevel/ddl/uplevel.ddl").getFile)
     .withSqlDataSourceConfigs("H2" -> sqlSrcConfig)
 
+  DomainResolutionDB.init(sqlSrcConfig)
+
+
+  session.registerSource(Namespace("sql"), sqlGraphSource)
+
+  session.cypher(
+    """
+      |FROM GRAPH sql.Resolutions
+      |MATCH (n)
+      |RETURN n
+    """.stripMargin).records.show
+
+  // print the schema of the graph
+  println(session.catalog.graph("sql.Resolutions").schema.pretty)
 
 
 

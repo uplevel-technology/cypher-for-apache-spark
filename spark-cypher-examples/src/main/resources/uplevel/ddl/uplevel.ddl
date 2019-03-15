@@ -2,48 +2,42 @@
 
 SET SCHEMA H2.RESOLUTION_DATALAKE;
 
-CREATE GRAPH RESOLUTIONS {
+CREATE GRAPH Resolutions (
 
   -- nodes
   DomainName ( value STRING ),
 
-  IpAddress ( value STRING, version NUMBER )
+  IpAddress ( value STRING, version STRING ),
 
-  InfoSource ( id NUMBER, name STRING )
+  InfoSource ( id INTEGER, name STRING ),
 
-  Resolution (id NUMBER )
+  Resolution (id INTEGER ),
 
   -- relationships
   RESOLVED_TO(
     timestamp STRING -- actually can be date
-  )
+  ),
 
   -- node mappings
-  (DomainName)
-    FROM TABLE_DOMAIN_NAME
+  (DomainName)  -- references DomainName node type defined above
+    FROM DomainName,  -- references DomainName table
 
   (IpAddress)
-    FROM TABLE_IP_ADDRESS
+    FROM IpAddress,
 
   (InfoSource)
-    FROM TABLE_INFO_SOURCE
-
-
-
-  -- hyper repr
-  -- (Resolution)
-   --  FROM TABLE_RESOLUTION
+    FROM InfoSource,
 
 
 
   -- rel mappings
-  (DomainName)-[:RESOLVED_TO]->(IpAddress)
-    FROM TABLE_RESOLUTIONS resolution
+  (DomainName)-[RESOLVED_TO]->(IpAddress)
+    FROM Resolution resolution
       START NODES (DomainName)
-        FROM TABLE_DOMAIN_NAME domainName
+        FROM DomainName domainName
           JOIN ON domainName.VALUE = resolution.DOMAINNAME
       END NODES (IPAddress)
-        FROM TABLE_IP_ADDRESS ip
+        FROM IpAddress ip
           JOIN ON ip.VALUE = resolution.RESOLVESTO
 
-}
+)

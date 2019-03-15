@@ -10,7 +10,7 @@ CREATE TABLE DomainName (
 
 CREATE TABLE IpAddress(
   Value varchar2 not null,
-  Version number not null,
+  Version varchar2 not null,
 
   constraint PK_IpAddress primary key (
           Value
@@ -19,8 +19,8 @@ CREATE TABLE IpAddress(
 );
 
 CREATE TABLE InfoSource (
+    Id integer not null,
     Name varchar2 not null,
-    Id number not null,
 
     constraint PK_InfoSource primary key (
       Id
@@ -30,11 +30,11 @@ CREATE TABLE InfoSource (
 
 CREATE TABLE RESOLUTION
 (
-  Id number not null,
+  Id integer not null,
   DomainName varchar2 not null,
   ResolvesTo varchar2 not null,
   ExecutedAt TIMESTAMP,
-  ExecutedBy number not null,
+  ExecutedBy integer not null,
 
   constraint PK_RESOLUTION primary key (
     Id
