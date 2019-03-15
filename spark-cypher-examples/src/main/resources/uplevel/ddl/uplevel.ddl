@@ -1,8 +1,8 @@
 -- noinspection SqlDialectInspectionForFile
 
-SET SCHEMA H2.DNS;
+SET SCHEMA H2.RESOLUTION_DATALAKE;
 
-CREATE GRAPH DNS {
+CREATE GRAPH RESOLUTIONS {
 
   -- nodes
   DomainName ( value STRING ),

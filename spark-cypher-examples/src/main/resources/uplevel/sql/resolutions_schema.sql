@@ -30,13 +30,18 @@ CREATE TABLE InfoSource (
 
 CREATE TABLE RESOLUTION
 (
+  Id number not null,
   DomainName varchar2 not null,
   ResolvesTo varchar2 not null,
-  ExecutedBy number not null,
   ExecutedAt TIMESTAMP,
+  ExecutedBy number not null,
+
+  constraint PK_RESOLUTION primary key (
+    Id
+  ),
 
   CONSTRAINT FK_RESOLUTION_DOMAIN FOREIGN KEY (
-    Domain
+    DomainName
   ) REFERENCES DomainName,
 
   CONSTRAINT FK_RESOLUTION_RESOLVES_TO FOREIGN KEY (
