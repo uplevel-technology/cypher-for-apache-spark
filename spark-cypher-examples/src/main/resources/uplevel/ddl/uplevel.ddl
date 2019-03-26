@@ -1,43 +1,20 @@
 -- noinspection SqlDialectInspectionForFile
 
-SET SCHEMA H2.RESOLUTION_DATALAKE;
+SET SCHEMA H2.DNS_RESOLUTION;
 
-CREATE GRAPH Resolutions (
+CREATE GRAPH DnsHistory (
 
-  -- nodes
-  DomainName ( value STRING ),
+  Domain ( value STRING ),                               -- domain node declaration
+  Ip ( value STRING ),                                   -- ip node declaration
+  RESOLVED_TO( timestamp localdatetime),                 -- RESOLVED_TO relationship declaration
 
-  IpAddress ( value STRING, version STRING ),
-
-  InfoSource ( id INTEGER, name STRING ),
-
-  Resolution (id INTEGER ),
-
-  -- relationships
-  RESOLVED_TO(
-    timestamp STRING -- actually can be date
-  ),
-
-  -- node mappings
-  (DomainName)  -- references DomainName node type defined above
-    FROM DomainName,  -- references DomainName table
-
-  (IpAddress)
-    FROM IpAddress,
-
-  (InfoSource)
-    FROM InfoSource,
+  (Domain) FROM DNS_RESOLUTION (DomainName as value),   -- mapping to domain nodes from sql
+  (Ip) FROM DNS_RESOLUTION (IPAddress as value),        -- mapping to IP nodes from sql
 
 
-
-  -- rel mappings
-  (DomainName)-[RESOLVED_TO]->(IpAddress)
-    FROM Resolution resolution
-      START NODES (DomainName)
-        FROM DomainName domainName
-          JOIN ON domainName.VALUE = resolution.DOMAINNAME
-      END NODES (IPAddress)
-        FROM IpAddress ip
-          JOIN ON ip.VALUE = resolution.RESOLVESTO
+  (Domain)-[RESOLVED_TO]->(Ip) FROM DNS_RESOLUTION rel  -- mapping to RESOLVED_TO rels from sql
+    START NODES (Domain) FROM DNS_RESOLUTION row JOIN ON rel.DomainName = row.DomainName
+    END NODES (Ip) FROM DNS_RESOLUTION row JOIN ON rel.IPAddress = row.IPAddress
 
 )
+

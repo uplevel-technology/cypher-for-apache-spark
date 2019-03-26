@@ -7,14 +7,14 @@ import org.opencypher.spark.testing.utils.H2Utils._
 import scala.io.Source
 import scala.util.Properties
 
-object DomainResolutionDB {
+object DnsHistoryDb {
 
   def init(sqlDataSourceConfig: SqlDataSourceConfig.Jdbc): Unit = {
 
     withConnection(sqlDataSourceConfig) { connection =>
-      connection.execute("DROP SCHEMA IF EXISTS RESOLUTION_DATALAKE")
-      connection.execute("CREATE SCHEMA RESOLUTION_DATALAKE")
-      connection.setSchema("RESOLUTION_DATALAKE")
+      connection.execute("DROP SCHEMA IF EXISTS DNS_RESOLUTION")
+      connection.execute("CREATE SCHEMA DNS_RESOLUTION")
+      connection.setSchema("DNS_RESOLUTION")
 
       // create the SQL db schema
       connection.execute(readResourceAsString("/uplevel/sql/resolutions_schema.sql"))
